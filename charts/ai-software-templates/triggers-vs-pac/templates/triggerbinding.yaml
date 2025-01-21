@@ -1,0 +1,12 @@
+---
+apiVersion: triggers.tekton.dev/v1alpha1
+kind: TriggerBinding
+metadata:
+  name: {{ .Release.Name }}-triggerbinding
+  namespace: {{ .Release.Namespace }}
+spec:
+  params:
+    - name: revision
+      value: $(body.head_commit.id)
+    - name: git-url
+      value: "https://github.com/$(body.repository.full_name)"

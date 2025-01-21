@@ -1,0 +1,57 @@
+---
+apiVersion: triggers.tekton.dev/v1alpha1
+kind: TriggerTemplate
+metadata:
+  name: {{ .Release.Name }}-triggertemplate
+  namespace: {{ .Release.Namespace }}
+spec:
+  params:
+    - name: revision
+      description: The git revision
+      default: master
+    - name: git-url
+      description: The git repository url
+  resourcetemplates:
+    - apiVersion: tekton.dev/v1beta1
+      kind: PipelineRun
+      metadata:
+        generateName: {{ .Values.tekton.applicationName }}-on-push-
+        labels:
+          app.kubernetes.io/part-of: {{ .Values.tekton.applicationName }}
+        name: {{ .Values.tekton.applicationName }}-on-push
+      spec:
+        serviceAccountName: pipeline
+        pipelineRef:
+          name: docker-build-ai-rhdh-push-patch
+        params:
+          - name: dockerfile
+            value: Containerfile
+          - name: deployment-name
+            value: {{ .Values.tekton.applicationName }}
+          - name: deployment-namespace
+            value: {{ .Values.tekton.applicationName }}
+          - name: container-name
+            value: app-inference
+          - name: git-url
+            value: $(tt.params.git-url)
+          - name: image-expires-after
+            value: 5d
+          - name: output-image
+            value:
+              quay.io/{{ .Values.tekton.quayAccountName }}/{{ .Values.tekton.applicationName }}:$(tt.params.revision)
+          - name: path-context
+            value: .
+          - name: revision
+            value: $(tt.params.revision)
+        workspaces:
+          - name: git-auth
+            secret:
+              secretName: "{{ .Values.tekton.gitSecretName }}"
+          - name: workspace
+            volumeClaimTemplate:
+              spec:
+                accessModes:
+                  - ReadWriteOnce
+                resources:
+                  requests:
+                    storage: 1Gi

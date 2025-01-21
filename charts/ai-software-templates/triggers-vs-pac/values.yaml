@@ -1,0 +1,6 @@
+tekton:
+  gitSecretName: github-secrets
+  # -- [REQUIRED] The applicationName
+  applicationName: chatbot
+  # -- [REQUIRED] The quay.io organization/account name
+  quayAccountName: my-org

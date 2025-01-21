@@ -25,22 +25,23 @@ spec:
 
               setup_data() {
                  gh repo clone "$GITHUB_SOURCE_REPO" app-source -- --no-tags --branch="$GITHUB_DEFAULT_BRANCH" --single-branch
-                 gh repo clone "$GITHUB_TETKON_SOURCE_REPO" tekton-source -- --no-tags --single-branch
+                 #gh repo clone "$GITHUB_TETKON_SOURCE_REPO" tekton-source -- --no-tags --single-branch
                  gh repo clone "$GH_REPO" "$APP_NAME" -- --no-tags --branch="$GITHUB_DEFAULT_BRANCH" --single-branch
 
-                 mkdir -p "$APP_NAME"/.tekton
+                 #mkdir -p "$APP_NAME"/.tekton
 
-                 cd tekton-source/pac/pipelineRuns/.tekton || exit
-                 sed -i 's@'"$TEKTON_FILE_APP_NAME_REPLACEMENT"'@'"$APP_NAME"'@g' docker-push.yaml
-                 sed -i 's@'"$TEKTON_FILE_APP_NAMESPACE_REPLACEMENT"'@'"$APP_NAMESPACE"'@g' docker-push.yaml
-                 sed -i 's@'"$TEKTON_FILE_QUAY_ACCOUNT_REPLACEMENT"'@'"$QUAY_ACCOUNT_NAME"'@g' docker-push.yaml
-                 cd - || exit
+                 #cd tekton-source/pac/pipelineRuns/.tekton || exit
+                 #sed -i 's@'"$TEKTON_FILE_APP_NAME_REPLACEMENT"'@'"$APP_NAME"'@g' docker-push.yaml
+                 #sed -i 's@'"$TEKTON_FILE_APP_NAMESPACE_REPLACEMENT"'@'"$APP_NAMESPACE"'@g' docker-push.yaml
+                 #sed -i 's@'"$TEKTON_FILE_QUAY_ACCOUNT_REPLACEMENT"'@'"$QUAY_ACCOUNT_NAME"'@g' docker-push.yaml
+                 #cd - || exit
 
                  cd app-source/chatbot || exit
                  cp * ../../"$APP_NAME"
-                 cd ../../tekton-source/pac/pipelineRuns/.tekton || exit
-                 cp docker-push.yaml ../../../../"$APP_NAME"/.tekton
-                 cd ../../../../"$APP_NAME" || exit
+                 #cd ../../tekton-source/pac/pipelineRuns/.tekton || exit
+                 #cp docker-push.yaml ../../../../"$APP_NAME"/.tekton
+                 #cd ../../../../"$APP_NAME" || exit
+                 cd ../../"$APP_NAME"
               }
 
               cd /tmp || exit
@@ -81,8 +82,8 @@ spec:
 
                 FILES=("Containerfile"
                 "chatbot_ui.py"
-                "requirements.txt"
-                ".tekton/docker-push.yaml")
+                "requirements.txt")
+                #".tekton/docker-push.yaml")
 
                 for FILE in "${FILES[@]}"
                 do

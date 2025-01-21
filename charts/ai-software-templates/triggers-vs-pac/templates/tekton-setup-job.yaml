@@ -1,0 +1,38 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  annotations:
+    helm.sh/hook: post-install,post-upgrade
+    helm.sh/hook-delete-policy: hook-succeeded
+  labels:
+    app.kubernetes.io/instance: {{ .Release.Name }}-tekton-triggers-setup
+    app.kubernetes.io/name:  {{ .Release.Name }}-tekton-triggers-setup
+    app.kubernetes.io/part-of: {{ .Release.Name }}
+  namespace: {{ .Release.Namespace }} 
+  name: {{ .Release.Name }}-tekton-triggers-setup
+spec:
+  template:
+    spec:
+      containers:
+        - name: setup-triggers
+          command:
+            - /bin/bash
+            - -c
+            - |
+              #!/usr/bin/env bash
+              set -o nounset
+              set -o pipefail
+
+              cd /tmp || exit
+
+              oc apply -f https://raw.githubusercontent.com/redhat-ai-dev/rhdh-pipelines/main/pac/pipelines/docker-build-ai-rhdh-push-patch.yaml
+              oc apply -f https://raw.githubusercontent.com/redhat-ai-dev/rhdh-pipelines/main/pac/tasks/init.yaml
+              oc apply -f https://raw.githubusercontent.com/redhat-ai-dev/rhdh-pipelines/main/pac/tasks/git-clone.yaml
+              oc apply -f https://raw.githubusercontent.com/redhat-ai-dev/rhdh-pipelines/main/pac/tasks/buildah-ai-rhdh.yaml
+              oc apply -f https://raw.githubusercontent.com/redhat-ai-dev/rhdh-pipelines/main/pac/tasks/update-deployment-patch.yaml
+              oc apply -f https://raw.githubusercontent.com/redhat-ai-dev/rhdh-pipelines/main/pac/tasks/show-sbom-rhdh.yaml
+              oc apply -f https://raw.githubusercontent.com/redhat-ai-dev/rhdh-pipelines/main/pac/tasks/summary.yaml
+
+          image: registry.redhat.io/openshift4/ose-cli-rhel9:v4.16
+      restartPolicy: Never
+      serviceAccountName: {{ .Release.Name }}-sa

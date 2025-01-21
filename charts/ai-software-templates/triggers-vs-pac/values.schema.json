@@ -1,0 +1,29 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "properties": {
+        "tekton": {
+            "properties": {
+                "gitSecretName": {
+                    "default": "github-secrets",
+                    "description": "The name of the Secret containing the required Github token.",
+                    "type": "string"
+                },
+                "quayAccountName": {
+                    "description": "[REQUIRED] The quay.io account that the application image will be pushed.",
+                    "title": "Quay Account Name",
+                    "type": "string"
+                },
+                "applicationName": {
+                    "description": "[REQUIRED] The name of the application that will leverage Tekton Triggers to handle GitHub push events.",
+                    "type": "string"
+                }
+            },
+            "required": [
+                "applicationName",
+                "quayAccountName"
+            ],
+            "type": "object"
+        }
+    },
+    "type": "object"
+}
