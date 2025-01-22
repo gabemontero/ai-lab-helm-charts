@@ -25,6 +25,15 @@ spec:
 
               cd /tmp || exit
 
+              echo "$GIT_CONFIG" > .gitconfig
+              echo "$GIT_CREDENTIALS" > .git-credentials
+              echo "$GIT_PROVIDER_TOKEN" > git-provider-token
+
+              oc create secret generic "$GIT_SECRET_NAME" \
+              --from-file=.gitconfig \
+              --from-file=.git-credentials \
+              --from-file=git-provider-token
+
               oc apply -f https://raw.githubusercontent.com/redhat-ai-dev/rhdh-pipelines/main/pac/pipelines/docker-build-ai-rhdh-push-patch.yaml
               oc apply -f https://raw.githubusercontent.com/redhat-ai-dev/rhdh-pipelines/main/pac/tasks/init.yaml
               oc apply -f https://raw.githubusercontent.com/redhat-ai-dev/rhdh-pipelines/main/pac/tasks/git-clone.yaml
@@ -34,5 +43,8 @@ spec:
               oc apply -f https://raw.githubusercontent.com/redhat-ai-dev/rhdh-pipelines/main/pac/tasks/summary.yaml
 
           image: registry.redhat.io/openshift4/ose-cli-rhel9:v4.16
+          envFrom:
+            - configMapRef:
+                name: {{ .Release.Name }}-app-config
       restartPolicy: Never
       serviceAccountName: {{ .Release.Name }}-sa

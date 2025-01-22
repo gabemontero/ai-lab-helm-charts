@@ -5,10 +5,17 @@
     "tekton": {
       "type": "object",
       "properties": {
-        "gitSecretName": {
-          "type": "string",
-          "description": "The name of the Secret containing the required Github token.",
-          "default": "github-secrets"
+        "gitCredentials": {
+          "description": "[REQUIRED] The value of the '.git-credentials' key of the Secret used by the git-clone task.",
+          "type": "string"
+        },
+        "gitConfig": {
+          "description": "[REQUIRED] The value of the '.gitconfig' key of the Secret used by the git-clone task.",
+          "type": "string"
+        },
+        "gitProviderToken": {
+          "description": "[REQUIRED] The value of the 'git-provider-token' key of the Secret used by the git-clone task.",
+          "type": "string"
         },
         "quayAccountName": {
           "description": "[REQUIRED] The quay.io account that the application image will be pushed.",
@@ -20,7 +27,7 @@
           "type": "string"
         }
       },
-      "required": ["applicationName", "quayAccountName"]
+      "required": ["applicationName", "quayAccountName", "gitCredentials", "gitConfig", "gitProviderToken"]
     }
   }
 }

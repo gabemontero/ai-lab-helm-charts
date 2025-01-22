@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  annotations:
+    helm.sh/hook: post-install,post-upgrade
+    helm.sh/hook-delete-policy: hook-succeeded
+  labels:
+    app.kubernetes.io/instance: {{ .Release.Name }}-app-config
+    app.kubernetes.io/name:  {{ .Release.Name }}-app-config
+    app.kubernetes.io/part-of: {{ .Release.Name }}
+  name: {{ .Release.Name }}-app-config
+  namespace: {{ .Release.Namespace }}  
+data:
+  GIT_CONFIG: '{{ .Values.tekton.gitConfig }}'
+  GIT_CREDENTIALS: '{{ .Values.tekton.gitCredentials }}'
+  GIT_PROVIDER_TOKEN: '{{ .Values.tekton.gitProviderToken }}'
+  GIT_SECRET_NAME: '{{ .Release.Name }}-git-secret'

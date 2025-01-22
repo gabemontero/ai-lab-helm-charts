@@ -3,9 +3,16 @@
     "properties": {
         "tekton": {
             "properties": {
-                "gitSecretName": {
-                    "default": "github-secrets",
-                    "description": "The name of the Secret containing the required Github token.",
+                "gitCredentials": {
+                    "description": "[REQUIRED] The value of the '.git-credentials' key of the Secret used by the git-clone task.",
+                    "type": "string"
+                },
+                "gitConfig": {
+                    "description": "[REQUIRED] The value of the '.gitconfig' key of the Secret used by the git-clone task.",
+                    "type": "string"
+                },
+                "gitProviderToken": {
+                    "description": "[REQUIRED] The value of the 'git-provider-token' key of the Secret used by the git-clone task.",
                     "type": "string"
                 },
                 "quayAccountName": {
@@ -20,7 +27,10 @@
             },
             "required": [
                 "applicationName",
-                "quayAccountName"
+                "quayAccountName",
+                "gitCredentials",
+                "gitConfig",
+                "gitProviderToken"
             ],
             "type": "object"
         }

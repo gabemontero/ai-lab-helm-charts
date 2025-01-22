@@ -18,7 +18,6 @@ spec:
         generateName: {{ .Values.tekton.applicationName }}-on-push-
         labels:
           app.kubernetes.io/part-of: {{ .Values.tekton.applicationName }}
-        name: {{ .Values.tekton.applicationName }}-on-push
       spec:
         serviceAccountName: pipeline
         pipelineRef:
@@ -46,7 +45,7 @@ spec:
         workspaces:
           - name: git-auth
             secret:
-              secretName: "{{ .Values.tekton.gitSecretName }}"
+              secretName: {{ .Release.Name }}-git-secret
           - name: workspace
             volumeClaimTemplate:
               spec:
